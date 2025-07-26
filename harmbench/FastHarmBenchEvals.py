@@ -5,6 +5,7 @@ import math
 from dotenv import load_dotenv
 import os
 import torch
+data_folder="/network/scratch/l/let/projects/latent-adversarial-training/tasks/harmbench/"
 
 load_dotenv()
 hf_access_token = os.getenv("HUGGINGFACE_API_KEY")
@@ -12,7 +13,7 @@ hf_access_token = os.getenv("HUGGINGFACE_API_KEY")
 def run_attack_evals(model, device="cuda", model_type="llama2", func_categories=["contextual"],
                            num_samples=100, max_gen_tokens=200, do_sample=False, temperature=0.7, verbose=False, train_test_split=None, 
                            only_run_evals=None, max_gen_batch_size=25,
-                           cache_dir=None, return_as_asrs=True, pretrained_cls="llama",
+                           cache_dir=None, return_as_asrs=True, pretrained_cls="simple",
                            no_print=False):
 
     llama_tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf", token=hf_access_token)
@@ -38,7 +39,9 @@ def run_attack_evals(model, device="cuda", model_type="llama2", func_categories=
    
     harmbench_cases = {"DirectRequest": harmbench_data_standard}
     for attack_name in ["GCG", "AutoDAN", "AutoPrompt", "PAIR", "TAP"]:
-        harmbench_cases[attack_name] = HarmBenchPrecomputedTask(test_cases_path=f"tasks/harmbench/data/harmbench_concise/{attack_name}/llama2_7b/test_cases/test_cases.json", use_system_prompt=model_type, tokenizer=tokenizer, 
+        project_folder = "/network/scratch/l/let/projects/latent-adversarial-training/"
+
+        harmbench_cases[attack_name] = HarmBenchPrecomputedTask(test_cases_path=project_folder+f"tasks/harmbench/data/harmbench_concise/{attack_name}/llama2_7b/test_cases/test_cases.json", use_system_prompt=model_type, tokenizer=tokenizer,
                                                                 gen_batch_size=min(5, max_gen_batch_size), cls_batch_size=5, device=device, data_name="harmbench_text", func_categories=func_categories, train_test_split=train_test_split, cls_tokenizer=llama_tokenizer)
         if verbose:
             print(f"Initialized {attack_name} HarmBenchTask with {len(harmbench_cases[attack_name].train_behaviors)} train behaviors and {len(harmbench_cases[attack_name].test_behaviors)} test cases")
