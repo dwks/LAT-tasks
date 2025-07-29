@@ -5,7 +5,6 @@ import math
 from dotenv import load_dotenv
 import os
 import torch
-data_folder="/network/scratch/l/let/projects/latent-adversarial-training/tasks/harmbench/"
 
 load_dotenv()
 hf_access_token = os.getenv("HUGGINGFACE_API_KEY")
@@ -39,7 +38,7 @@ def run_attack_evals(model, device="cuda", model_type="llama2", func_categories=
    
     harmbench_cases = {"DirectRequest": harmbench_data_standard}
     for attack_name in ["GCG", "AutoDAN", "AutoPrompt", "PAIR", "TAP"]:
-        project_folder = "/network/scratch/l/let/projects/latent-adversarial-training/"
+        project_folder = "./"
 
         harmbench_cases[attack_name] = HarmBenchPrecomputedTask(test_cases_path=project_folder+f"tasks/harmbench/data/harmbench_concise/{attack_name}/llama2_7b/test_cases/test_cases.json", use_system_prompt=model_type, tokenizer=tokenizer,
                                                                 gen_batch_size=min(5, max_gen_batch_size), cls_batch_size=5, device=device, data_name="harmbench_text", func_categories=func_categories, train_test_split=train_test_split, cls_tokenizer=llama_tokenizer)
