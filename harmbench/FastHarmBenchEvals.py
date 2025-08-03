@@ -30,6 +30,10 @@ def run_attack_evals(model, device="cuda", model_type="llama2", func_categories=
         tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B-Instruct")
         tokenizer.pad_token_id = tokenizer.eos_token_id
         tokenizer.padding_side = "left"
+    elif model_type == "qwen":
+        tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen3-4B")
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+        tokenizer.padding_side = "left"
 
     harmbench_data_standard = HarmBenchTask(tokenizer=tokenizer, gen_batch_size=min(25, max_gen_batch_size), cls_batch_size=8, device=device,
                                             data_name="harmbench_text", func_categories=func_categories, train_test_split=train_test_split,

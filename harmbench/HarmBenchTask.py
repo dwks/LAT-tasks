@@ -15,7 +15,7 @@ from collections import defaultdict
 from tasks.evaluation_utils import get_model_grades_threaded, get_convs
 import string
 import random
-data_folder="tasks/harmbench/"
+data_folder="./tasks/harmbench/"
 LLAMA2_CLS_PROMPT = {
         "description": "Template For Llama-2-13b-behavior classifier",
         "prompt": '''[INST] <<SYS>>
